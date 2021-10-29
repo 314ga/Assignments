@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.dashboard.DashboardFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/btn_load_trajectory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/load_trajectory_data"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+            <RadioGroup
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_load_trajectory"
+                android:id="@+id/radioGroup">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="55dp"
+                    android:text="@string/raw"
+                    android:id="@+id/rb_raw"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:checked="false"
+                    android:textSize="25sp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/mean"
+                    android:id="@+id/rb_mean"
+                    android:layout_gravity="center_vertical"
+
+                    android:checked="false"
+                    android:textSize="25sp"
+                    android:layout_weight="0.13" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/median"
+                    android:id="@+id/rb_median"
+                    android:layout_gravity="center_vertical"
+                    android:checked="false"
+                    android:textSize="25sp"
+                    android:layout_weight="0.13" />
+            </RadioGroup>
+
+        <org.osmdroid.views.MapView android:id="@+id/map"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@+id/layout_buttons"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

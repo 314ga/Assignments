@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Assignments</string>
+    <string name="title_home">Assignment1</string>
+    <string name="title_dashboard">Assignment2</string>
+    <string name="title_notifications">Assignment3</string>
+    <string name="latitude">Latitude:</string>
+    <string name="get_location">Get location</string>
+    <string name="longitude">Longitude:</string>
+    <string name="country">Country:</string>
+    <string name="address">Address:</string>
+    <string name="locality">Locality:</string>
+    <string name="date_and_time">Date and Time:</string>
+    <string name="gyroscope_data">Gyroscope data:</string>
+    <string name="x_axis">X Axis:</string>
+    <string name="y_axis">Y Axis:</string>
+    <string name="z_axis">Z Axis:</string>
+    <string name="load_trajectory_data">Load trajectory data</string>
+    <string name="raw">RAW</string>
+    <string name="mean">MEAN</string>
+    <string name="median">MEDIAN</string>
+    <string name="activity_label">Activity Label: </string>
+    <string name="confidence">Confidence: </string>
+    <string name="stop_tracking">Stop tracking</string>
+    <string name="start_tracking">Start tracking</string>
+</resources>
