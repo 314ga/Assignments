@@ -71,4 +71,10 @@ public class LocationActivity implements Serializable
         this.accuracy.add(accuracy);
         this.timestamp.add(Calendar.getInstance().getTime());
     }
+    public void addAllActivities(String activity, int accuracy)
+    {
+        this.activity.add(activity);
+        this.accuracy.add(accuracy);
+        this.timestamp.add(Calendar.getInstance().getTime());
+    }
 }

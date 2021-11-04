@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -49,7 +50,7 @@ public class NotificationsFragment extends Fragment {
     private TextView mTextConfidence;
     private String currentActivity;
     private int accuracy;
-    private LocationActivity locationActivity;
+    private LocationActivity locationActivity,allactivities;
     private ArrayList<Model> trackingList;
     private Button startTracking,stopTracking;
     List<ActivityTransition> transitions = new ArrayList<>();
@@ -70,6 +71,7 @@ public class NotificationsFragment extends Fragment {
         startTracking = binding.startRacking;
         stopTracking = binding.stopRacking;
         locationActivity = new LocationActivity();
+        allactivities = new LocationActivity();
         trackingList = new ArrayList<>();
         ListView lview = binding.listview;
         listviewAdapter adapter = new listviewAdapter(getActivity(), trackingList);
@@ -95,9 +97,6 @@ public class NotificationsFragment extends Fragment {
         });
        stopTracking.setOnClickListener(view -> {
            showCustomDialog();
-           getActivity().stopService(new Intent(getContext(),ActivityDetectionService.class));
-           getActivity().stopService(new Intent(getContext(),LocationService.class));
-           LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mActivityBroadcastReceiver);
         });
         return root;
     }
@@ -126,18 +125,22 @@ public class NotificationsFragment extends Fragment {
         final Button save = dialog.findViewById(R.id.save_btn);
 
         save.setOnClickListener(view -> {
-            writeCSVFile(fileName.getText().toString());
+            writeCSVFile(fileName.getText().toString(),locationActivity,false);
+            writeCSVFile(fileName.getText().toString() + "All",allactivities,true);
+            getActivity().stopService(new Intent(getContext(),ActivityDetectionService.class));
+            getActivity().stopService(new Intent(getContext(),LocationService.class));
+            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mActivityBroadcastReceiver);
             dialog.dismiss();
         });
 
         dialog.show();
     }
-    private  void writeCSVFile(String filename)
+    private  void writeCSVFile(String filename, LocationActivity data, boolean allActivities)
     {
         //read csv tracking file
         CSVFile csvFile = new CSVFile(null);
         try {
-            csvFile.write(filename,locationActivity,getContext());
+            csvFile.write(filename,data,getContext(),allActivities);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -196,11 +199,13 @@ public class NotificationsFragment extends Fragment {
                 break;
             }
         }
+        Toast.makeText(getContext(),"Succesfully broadcasting",Toast.LENGTH_LONG);
         if(confidence>60)
         {
             currentActivity = label;
             accuracy = confidence;
         }
+        allactivities.addAllActivities(label,accuracy);
         Log.d(TAG, "broadcast:onReceive(): Activity is " + label
                 + " and confidence level is: " + confidence);
 
@@ -214,6 +219,8 @@ public class NotificationsFragment extends Fragment {
         super.onDestroyView();
         binding = null;
         if(mActivityBroadcastReceiver != null){
+            writeCSVFile("onstopsave",locationActivity,false);
+            writeCSVFile("onstopsaveAll",allactivities,true);
             getActivity().stopService(new Intent(getContext(),ActivityDetectionService.class));
             getActivity().stopService(new Intent(getContext(),LocationService.class));
             LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mActivityBroadcastReceiver);

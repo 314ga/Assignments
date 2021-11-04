@@ -33,6 +33,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +44,7 @@ public class DashboardFragment extends Fragment {
     private FragmentDashboardBinding binding;
     private MapView map = null;
     private List loadedFile;
+    private List loadedFileExcel;
     private Polyline roadOverlay;
     private RoadManager roadManager;
     private Road road;
@@ -123,6 +125,14 @@ public class DashboardFragment extends Fragment {
         map.setMultiTouchControls(true);
 
         loadedFile = readCSVFile(R.raw.walking);
+        loadedFileExcel = readCSVFile(R.raw.trackingpigaall);////////////////////////////////////////////////////////////////////////////////////////////
+        CSVFile csv = new CSVFile(null);
+        try {
+            csv.writeNewExcel(fixExcel(loadedFileExcel));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //create road path
         ArrayList<GeoPoint> path = createGeoPointList(loadedFile);
 
@@ -185,6 +195,122 @@ public class DashboardFragment extends Fragment {
             i++;
         }
         return waypoints;
+    }
+    private String fixExcel(List list)
+    {
+        String excelFile = "activity,confidence,timestamp\n";
+
+        int i = 1;
+        boolean walking= false,running= false,tilting= false,inVehicle= false,onBike= false, unknown= false, onFoot= false,still = false;
+        String time = "x";
+        int minLoop = 0;
+        while(i < list.size())
+        {
+            String[] pointArray  = (String[])list.get(i);
+            if(pointArray.length > 1)
+            {
+            if(pointArray[2].equals(time))
+            {
+              excelFile += pointArray[0]+","+pointArray[1]+","+time + "\n";
+              minLoop++;
+            }
+            else if(time.equals("x"))
+            {
+                time = pointArray[2];
+                excelFile += pointArray[0]+","+pointArray[1]+","+time + "\n";
+                minLoop++;
+            }
+            else
+            {
+                if(minLoop != 8)
+                {
+                    if(!walking)
+                    {
+                        excelFile += "Walking,0,"+time + "\n";
+                    }
+                    if(!running)
+                    {
+                        excelFile += "Running,0,"+time + "\n";
+                    }
+                    if(!tilting)
+                    {
+                        excelFile += "Tilting,0,"+time + "\n";
+                    }
+                    if(!inVehicle)
+                    {
+                        excelFile += "In_Vehicle,0,"+time + "\n";
+                    }
+                    if(!unknown)
+                    {
+                        excelFile += "Unknown,0,"+time + "\n";
+                    }
+                    if(!onBike)
+                    {
+                        excelFile += "On_Bicycle,0,"+time + "\n";
+                    }
+                    if(!onFoot)
+                    {
+                        excelFile += "On_Foot,0,"+time + "\n";
+                    }
+                    if(!still)
+                    { excelFile += "Still,0,"+time + "\n";
+
+                    }
+                }
+                excelFile += pointArray[0]+","+pointArray[1]+","+pointArray[2] + "\n";
+                walking = false;running = false;tilting = false;inVehicle = false;onBike = false; unknown = false; onFoot = false; still = false;
+                minLoop = 1;
+                time = pointArray[2];
+            }
+            switch(pointArray[0])
+            {
+                case "Walking":
+                {
+                    walking = true;
+                    break;
+                }
+                case "Still":
+                {
+                    still = true;
+                    break;
+                }
+                case "Unknown" :
+                {
+                    unknown = true;
+                    break;
+                }
+                case "On_Foot" :
+                {
+                    onFoot = true;
+                    break;
+                }
+                case "Running" :
+                {
+                    running = true;
+                    break;
+                }
+                case "Tilting" :
+                {
+                    tilting = true;
+                    break;
+                }
+                case "In_Vehicle" :
+                {
+                    inVehicle = true;
+                    break;
+                }
+                case "On_Bicycle" :
+                {
+                    onBike = true;
+                    break;
+                }
+                default:
+                    break;
+
+            }}
+            i++;
+        }
+        return excelFile;
     }
     private ArrayList<GeoPoint> createGeoPointList(LocationActivity locationActivity)
     {
